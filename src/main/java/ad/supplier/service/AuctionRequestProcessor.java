@@ -26,7 +26,7 @@ public class AuctionRequestProcessor {
     public BidResponse sendRequest(BidRequest bidRequest, String address) {
         log.info("START");
         log.info("Sending request {} to the server = > {} ", bidRequest, address);
-        return getMockResponse(bidRequest, address);
+        return getMockResponse(bidRequest);
     }
 
     public void processRequestForAuction(String id, Map<String, String> allParams) {

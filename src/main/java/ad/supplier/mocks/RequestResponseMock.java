@@ -13,7 +13,7 @@ import java.math.RoundingMode;
 @Log4j2
 public class RequestResponseMock {
 
-    public static BidResponse getMockResponse(BidRequest bidRequest, String address) {
+    public static BidResponse getMockResponse(BidRequest bidRequest) {
         double price = getPriceForAuction();
         BidResponse response = BidResponse.builder()
                 .id(bidRequest.getId())
