@@ -19,20 +19,30 @@ public class AuctionRequestProcessor {
     @Value("#{'${bidders}'.split(',')}")
     private HashSet<String> bidServers;
 
-    public BidRequest prepareRequest(String id, Map<String, String> attributes) {
-        return BidRequest.builder().id(id).attributes(attributes).build();
+    public final WebClientBidder webClientBidder;
+
+    public AuctionRequestProcessor(WebClientBidder webClientBidder) {
+        this.webClientBidder = webClientBidder;
     }
 
-    public BidResponse sendRequest(BidRequest bidRequest, String address) {
+    public BidRequest prepareRequest(String id, Map<String, String> attributes) {
+        return BidRequest.builder()
+                .id(id)
+                .attributes(attributes)
+                .build();
+    }
+
+    public BidResponse sendRequest(String address, BidRequest bidRequest) {
         log.info("START");
         log.info("Sending request {} to the server = > {} ", bidRequest, address);
+        webClientBidder.postMock(address, bidRequest);
+        webClientBidder.postAdBid(address, bidRequest);
         return getMockResponse(bidRequest);
     }
 
     public void processRequestForAuction(String id, Map<String, String> allParams) {
         BidRequest bidRequest = prepareRequest(id, allParams);
-        sendRequest(bidRequest, bidServers.stream().findFirst().get());
-
+        sendRequest(bidServers.stream().findFirst().get(), bidRequest);
     }
 
 }

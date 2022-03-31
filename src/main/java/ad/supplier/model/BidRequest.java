@@ -1,9 +1,8 @@
 package ad.supplier.model;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
+import lombok.extern.jackson.Jacksonized;
 
 import java.util.Map;
 
@@ -14,7 +13,10 @@ import java.util.Map;
 @EqualsAndHashCode
 @ToString
 @Builder
+@Jacksonized
 public class BidRequest {
+    @JsonProperty
     private String id;
+    @JsonProperty
     private Map<String, String> attributes;
 }
