@@ -25,6 +25,18 @@ public class RequestResponseMock {
         return response;
     }
 
+    public static BidResponse getMockResponse() {
+        double price = getPriceForAuction();
+        BidResponse response = BidResponse.builder()
+                .id("123")
+                .bid(price)
+                .content(String.format("%s:%s", 123, price))
+                .build();
+        log.info("a complete response from server => {}", response);
+        log.info("END.");
+        return response;
+    }
+
     public static double getPriceForAuction() {
         BigDecimal randFromDouble = new BigDecimal(1000 * Math.random());
         return randFromDouble.setScale(2, RoundingMode.HALF_EVEN).doubleValue();

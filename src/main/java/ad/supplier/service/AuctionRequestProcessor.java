@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static ad.supplier.mocks.RequestResponseMock.getMockResponse;
-
 /**
  * @author natalija
  */
@@ -32,17 +30,14 @@ public class AuctionRequestProcessor {
                 .build();
     }
 
-    public BidResponse sendRequest(String address, BidRequest bidRequest) {
-        log.info("START");
-        log.info("Sending request {} to the server = > {} ", bidRequest, address);
-        webClientBidder.postMock(address, bidRequest);
-        webClientBidder.postAdBid(address, bidRequest);
-        return getMockResponse(bidRequest);
-    }
-
     public void processRequestForAuction(String id, Map<String, String> allParams) {
         BidRequest bidRequest = prepareRequest(id, allParams);
         sendRequest(bidServers.stream().findFirst().get(), bidRequest);
     }
 
+    public BidResponse sendRequest(String address, BidRequest bidRequest) {
+        log.info("START");
+        log.info("Sending request {} to the server = > {} ", bidRequest, address);
+        return webClientBidder.postAdBid(address, bidRequest);
+    }
 }
