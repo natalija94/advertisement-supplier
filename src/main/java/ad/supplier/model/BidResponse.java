@@ -16,7 +16,7 @@ public class BidResponse {
     @JsonProperty
     private String id;
     @JsonProperty
-    private Double bid;
+    private double bid;
     @JsonProperty
     private String content;
 }

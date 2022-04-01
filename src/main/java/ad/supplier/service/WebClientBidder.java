@@ -2,9 +2,7 @@ package ad.supplier.service;
 
 import ad.supplier.model.BidRequest;
 import ad.supplier.model.BidResponse;
-import ad.supplier.util.AdBidComparator;
 import lombok.extern.log4j.Log4j2;
-import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -15,9 +13,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
-
-import static ad.supplier.mocks.RequestResponseMock.getMockResponse;
+import java.util.function.Consumer;
 
 /**
  * @author natalija
@@ -36,35 +32,30 @@ public class WebClientBidder {
                 .build();
     }
 
-    public BidResponse postAdBid(String url, BidRequest bidRequest) {
+    public void postAdBid(String url, BidRequest bidRequest, Consumer<BidResponse> handleResponse) {
         //todo handle errors
         log.info("Sending to server: {}", url);
-        BidResponse response = buildWebClient(url)
+        BidResponse response = bidRequestBuilder(url, bidRequest).block();
+        handleResponse.accept(response);
+
+        log.info("Bid Response: id: {}, url: {}, response: {}", response.getId(), url, response.getBid());
+    }
+
+    public Mono<BidResponse> bidRequestBuilder(String url, BidRequest bidRequest) {
+        //todo handle errors
+        return buildWebClient(url)
                 .post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(bidRequest)
                 .retrieve()
-                .bodyToMono(BidResponse.class)
-                .block();
-
-        log.info("id: {}, url: {}, response: {}", response.getId(), url, response.getBid());
-        return response;
+                .bodyToMono(BidResponse.class);
     }
 
-    public BidResponse findTheBestResponse(Flux<BidResponse> responses) {
-        //todo
-        return getMockResponse();
-    }
-
-    public void fetchBidsFromAuctionOneByOne(final BidRequest bidRequest) {
+    public void fetchBidsFromAuctionOneByOne(final BidRequest bidRequest, Consumer<BidResponse> handleResponse) {
         Mono<Void> logUsers = Flux.fromIterable(bidServers)
-                .map(url -> postAdBid(url, bidRequest))
-                .doOnNext(bid -> log.info("Do something with response. {} \n", bid.getContent()))
+                .map(url -> bidRequestBuilder(url, bidRequest))
+                .doOnNext(bid -> log.info("Handle response. {} \n", bid.block().getContent()))
                 .then();
         logUsers.subscribe();
-    }
-
-    public void fetchBidsFromAuction(BidRequest bidRequest) {
-        // return Flux.merge(post_requests);
     }
 }
