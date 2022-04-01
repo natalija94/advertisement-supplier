@@ -4,12 +4,15 @@ import ad.supplier.exception.NoAvailableBidException;
 import ad.supplier.model.BidResponse;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+
+import static ad.supplier.businesslogic.Constants.PRICE_ATTRIBUTE_CONST;
 
 /**
  * @author natalija
@@ -37,6 +40,15 @@ public class AuctionHandler implements Consumer<BidResponse> {
         }
         BidResponse response = Collections.max(bids, new AdBidComparator());
         log.info("Best offer for auction {} is => {}.", auctionId, response.getBid());
+        return formatBestOffer(response);
+    }
+
+    public BidResponse formatBestOffer(BidResponse response) {
+        if (response == null || StringUtils.isEmpty(response.getId()) || StringUtils.isEmpty(response.getContent())) {
+            throw new IllegalArgumentException("Please provide valid input in order to get appropriate results.");
+        }
+        response.setContent(response.getContent().replace(PRICE_ATTRIBUTE_CONST, String.format("%.0f", response.getBid())));
+
         return response;
     }
 }

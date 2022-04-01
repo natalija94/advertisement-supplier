@@ -38,7 +38,7 @@ public class WebClientBidder {
         BidResponse response = bidRequestBuilder(url, bidRequest).block();
         handleResponse.accept(response);
 
-        log.info("Bid Response: id: {}, url: {}, response: {}", response.getId(), url, response.getBid());
+        log.info("Bid Response: id: {}, url: {}, response: {}", response.getContent(), url, response.getBid());
     }
 
     public Mono<BidResponse> bidRequestBuilder(String url, BidRequest bidRequest) {

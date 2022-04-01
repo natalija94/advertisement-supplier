@@ -24,7 +24,7 @@ public class BidderController {
     @GetMapping("/{id}")
     String getTheBestAdOffer(@PathVariable String id, @RequestParam Map<String, String> allParams) {
         try {
-            return String.format("%s:%s", id, auctionRequestProcessor.processRequestForAuction(id, allParams).getBid());
+            return auctionRequestProcessor.processRequestForAuction(id, allParams).getContent();
         } catch (NoAvailableBidException e) {
             throw new ResponseStatusException(HttpStatus.SEE_OTHER, String.format("There are no available bids for auction: %s", id), e);
         }
