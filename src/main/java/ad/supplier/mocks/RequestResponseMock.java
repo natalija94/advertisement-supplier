@@ -32,8 +32,7 @@ public class RequestResponseMock {
                 .bid(price)
                 .content(String.format("%s:%s", 123, price))
                 .build();
-        log.info("a complete response from server => {}", response);
-        log.info("END.");
+        log.info("MOCK RETURNED");
         return response;
     }
 
