@@ -38,16 +38,19 @@ public class AuctionHandler implements Consumer<BidResponse> {
         if (CollectionUtils.isEmpty(bids)) {
             throw new NoAvailableBidException(auctionId);
         }
-        BidResponse response = Collections.max(bids, new AdBidComparator());
-        log.info("Best offer for auction {} is => {}.", auctionId, response.getBid());
-        return formatBestOffer(response);
+        BidResponse formattedOffer = formatBestOffer(Collections.max(bids, new AdBidComparator()));
+        log.info("Best offer for auction {} is => {}.", auctionId, formattedOffer.getContent());
+        return formattedOffer;
     }
 
     public BidResponse formatBestOffer(BidResponse response) {
-        if (response == null || StringUtils.isEmpty(response.getId()) || StringUtils.isEmpty(response.getContent())) {
+        if (response == null || StringUtils.isEmpty(response.getId()) || StringUtils.isEmpty(response.getContent()) ) {
             throw new IllegalArgumentException("Please provide valid input in order to get appropriate results.");
         }
-        response.setContent(response.getContent().replace(PRICE_ATTRIBUTE_CONST, String.format("%.0f", response.getBid())));
+
+        if(response.getContent().contains(PRICE_ATTRIBUTE_CONST)){
+            response.setContent(response.getContent().replace(PRICE_ATTRIBUTE_CONST, String.format("%.0f", response.getBid())));
+        }
 
         return response;
     }
