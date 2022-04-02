@@ -9,6 +9,10 @@ import java.util.Map;
 /**
  * @author natalija
  */
+
+/**
+ * Request to be sent for auction. (Class representation of json.)
+ */
 @Data
 @EqualsAndHashCode
 @ToString

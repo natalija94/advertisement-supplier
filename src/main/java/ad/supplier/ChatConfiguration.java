@@ -25,9 +25,14 @@ public class ChatConfiguration {
     @Autowired
     WebClientBidder webClientBidder;
 
+    /**
+     * Bean creation based on configuration param: bidOperationType.
+     *
+     * @return expected processor.
+     */
     @Bean
-    AuctionRequestProcessor auctionRequestProcessor (){
-        switch (bidOperationType){
+    AuctionRequestProcessor auctionRequestProcessor() {
+        switch (bidOperationType) {
             case PARALLEL:
                 return new AuctionRequestProcessorParallel(webClientBidder);
             case SEQUENTIAL:

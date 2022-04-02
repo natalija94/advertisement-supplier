@@ -21,6 +21,7 @@ import static ad.supplier.businesslogic.AuctionValidator.isBidRequestValid;
 public class AuctionRequestProcessorParallel implements AuctionRequestProcessor {
 
     public final WebClientBidder webClientBidder;
+
     @Value("#{'${bidders}'.split(',')}")
     private TreeSet<String> bidServers;
 
@@ -28,19 +29,16 @@ public class AuctionRequestProcessorParallel implements AuctionRequestProcessor 
         this.webClientBidder = webClientBidder;
     }
 
+    /**
+     * Broadcast messages in parallel.
+     * If initial expected.result is considered this isn't requested.
+     *
+     * @param bidRequest bid request to be sent.
+     * @return best offer from Bidders.
+     * @throws NoAvailableBidException if no available/proper offers.
+     */
     @Override
     public BidResponse processRequestForAuction(BidRequest bidRequest) throws NoAvailableBidException {
-        if (!isBidRequestValid(bidRequest)) {
-            throw new RuntimeException("BidRequest must have specified id and attributes.");
-        }
-        return broadcastAuctionRequestInParallel(bidRequest);
-    }
-
-    /*
-     * Broadcast messages in parallel.
-     * If expected.result is considered this isn't requested.
-     */
-    private BidResponse broadcastAuctionRequestInParallel(final BidRequest bidRequest) throws NoAvailableBidException {
         if (!isBidRequestValid(bidRequest)) {
             throw new RuntimeException("BidRequest must be valid.");
         }
@@ -53,7 +51,6 @@ public class AuctionRequestProcessorParallel implements AuctionRequestProcessor 
         log.debug("END OF AUCTION.\n");
         return bestOffer;
     }
-
 
     private void postAdBid(String url, BidRequest bidRequest, Consumer<BidResponse> handleResponse) {
         if (StringUtils.isEmpty(url) || !isBidRequestValid(bidRequest)) {

@@ -3,6 +3,10 @@ package ad.supplier.exception;
 /**
  * @author natalija
  */
+
+/**
+ * Thrown if some unexpected exception thrown while sending BidRequest.
+ */
 public class BidRequestException extends Exception {
     String errorStatus;
 

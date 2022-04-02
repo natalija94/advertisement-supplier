@@ -10,8 +10,18 @@ import java.util.Map;
 /**
  * @author natalija
  */
-public interface AuctionRequestProcessor {
 
+/**
+ * Auction processor.
+ */
+public interface AuctionRequestProcessor {
+    /**
+     * Default request processor method.
+     *
+     * @param id         identifies auction. Path variable from request.
+     * @param attributes params from request.
+     * @return created BidRequest based on request.
+     */
     default BidRequest prepareRequest(String id, Map<String, String> attributes) {
         if (StringUtils.isEmpty(id)) {
             throw new RuntimeException("BidRequest must have specified id and attributes.");
@@ -19,7 +29,15 @@ public interface AuctionRequestProcessor {
         return BidRequest.builder().id(id).attributes(attributes).build();
     }
 
-    default BidResponse processRequestForAuction(String id, Map<String, String> attributes) throws NoAvailableBidException{
+    /**
+     * Process request for auction. Sends request to bidders.
+     *
+     * @param id         identifies auction. Path variable from request.
+     * @param attributes params from request.
+     * @return best offer from Bidders.
+     * @throws NoAvailableBidException if no available/proper offers.
+     */
+    default BidResponse processRequestForAuction(String id, Map<String, String> attributes) throws NoAvailableBidException {
         if (StringUtils.isEmpty(id)) {
             throw new RuntimeException("BidRequest must have specified id and attributes.");
         }
@@ -28,5 +46,12 @@ public interface AuctionRequestProcessor {
         return processRequestForAuction(bidRequest);
     }
 
+    /**
+     * BidOperationType dependent processing.Sends request to bidders.
+     *
+     * @param bidRequest formatted request ready to be sent to bidders.
+     * @return best offer from Bidders.
+     * @throws NoAvailableBidException if no available/proper offers.
+     */
     BidResponse processRequestForAuction(BidRequest bidRequest) throws NoAvailableBidException;
 }

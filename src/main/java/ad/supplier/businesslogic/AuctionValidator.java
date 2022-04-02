@@ -7,6 +7,10 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * @author natalija
  */
+
+/**
+* Util for auction inputs/results validation.
+ */
 public class AuctionValidator {
     public static boolean isBidResponseValid(BidResponse bidResponse) {
         return bidResponse != null && StringUtils.isNotEmpty(bidResponse.getId()) && StringUtils.isNotEmpty(bidResponse.getContent());

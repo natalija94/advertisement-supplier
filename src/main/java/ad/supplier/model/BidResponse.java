@@ -7,6 +7,11 @@ import lombok.extern.jackson.Jacksonized;
 /**
  * @author natalija
  */
+
+/**
+ * Received response from auction. (Class representation of json.)
+ */
+
 @Data
 @EqualsAndHashCode
 @ToString

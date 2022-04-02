@@ -17,6 +17,12 @@ import static ad.supplier.businesslogic.Constants.PRICE_ATTRIBUTE_CONST;
 /**
  * @author natalija
  */
+
+/**
+ * Handles auction responses.
+ * Can provide the best result according to available bids.
+ * Formats the best offer.
+ */
 @Data
 @Log4j2
 public class AuctionHandler implements Consumer<BidResponse> {
@@ -27,6 +33,10 @@ public class AuctionHandler implements Consumer<BidResponse> {
         this.auctionId = auctionId;
     }
 
+    /**
+     * Add offer if it is valid.
+     * @return add new offer.
+     */
     @Override
     public void accept(BidResponse bidResponse) {
         if (!isBidResponseValid(bidResponse)) {
@@ -35,6 +45,11 @@ public class AuctionHandler implements Consumer<BidResponse> {
         bids.add(formatBestOffer(bidResponse));
     }
 
+    /**
+     * Finds the best bid offer.
+     * @return the best of available offers.
+     * @throws NoAvailableBidException if not available offers.
+     */
     public BidResponse getBestOffer() throws NoAvailableBidException {
         if (CollectionUtils.isEmpty(bids)) {
             throw new NoAvailableBidException(auctionId);
@@ -44,6 +59,11 @@ public class AuctionHandler implements Consumer<BidResponse> {
         return formattedOffer;
     }
 
+    /**
+     * Formats the best bid offer.
+     * @param response to be formatted (content format).
+     * @return formatted result.
+     */
     public BidResponse formatBestOffer(BidResponse response) {
         if (!isBidResponseValid(response)) {
             throw new IllegalArgumentException("Response must be specified in order to be formatted.");

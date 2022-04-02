@@ -10,6 +10,10 @@ import java.math.RoundingMode;
 /**
  * @author natalija
  */
+
+/**
+ * Mocks provider, purpose process of development.
+ */
 @Log4j2
 public class RequestResponseMock {
 

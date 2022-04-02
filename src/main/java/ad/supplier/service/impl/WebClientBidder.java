@@ -29,6 +29,12 @@ public class WebClientBidder {
     @Value("#{'${bidders}'.split(',')}")
     private TreeSet<String> bidServers;
 
+    /**
+     * Web client instance builder.
+     *
+     * @param url server.
+     * @return webclient instance.
+     */
     public WebClient buildWebClient(String url) {
         if (StringUtils.isEmpty(url)) {
             throw new IllegalArgumentException("Url must be specified in order to create connection.");
@@ -41,6 +47,13 @@ public class WebClientBidder {
                 .build();
     }
 
+    /**
+     * Prepares and sends the request to one bidder.
+     *
+     * @param url        Bidder server.
+     * @param bidRequest request to be sent.
+     * @return bid from Bidder.
+     */
     public BidResponse bidRequestBuilder(String url, BidRequest bidRequest) {
         if (StringUtils.isEmpty(url) || !isBidRequestValid(bidRequest)) {
             throw new IllegalArgumentException("Both Url and valid request must be specified in order to send request for auction.");
@@ -66,6 +79,12 @@ public class WebClientBidder {
                 .block();
     }
 
+    /**
+     * Processing of bids: one by one.
+     *
+     * @param bidRequest     request to be broadcasted.
+     * @param handleResponse defined action for received response.
+     */
     public void fetchBidsOneByOne(final BidRequest bidRequest, Consumer<BidResponse> handleResponse) {
         if (handleResponse == null || !isBidRequestValid(bidRequest)) {
             throw new IllegalArgumentException("Specified params not defined.");

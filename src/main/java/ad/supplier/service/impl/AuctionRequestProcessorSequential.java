@@ -20,18 +20,17 @@ public class AuctionRequestProcessorSequential implements AuctionRequestProcesso
         this.webClientBidder = webClientBidder;
     }
 
+    /**
+     * Broadcast messages sequentially.
+     * Purpose: to be consistent to expected.result.
+     * Return the best offer from Bidders.
+     *
+     * @param bidRequest bid request to be sent.
+     * @return best offer from Bidders.
+     * @throws NoAvailableBidException if no available/proper offers.
+     */
     @Override
     public BidResponse processRequestForAuction(BidRequest bidRequest) throws NoAvailableBidException {
-        if (!isBidRequestValid(bidRequest)) {
-            throw new RuntimeException("BidRequest must have specified id and attributes.");
-        }
-        return broadcastAuctionRequestSequentially(bidRequest);
-    }
-
-    /*
-     * Broadcast messages sequentially.
-     */
-    public BidResponse broadcastAuctionRequestSequentially(BidRequest bidRequest) throws NoAvailableBidException {
         if (!isBidRequestValid(bidRequest)) {
             throw new RuntimeException("BidRequest must have specified id and attributes.");
         }

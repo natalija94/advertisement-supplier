@@ -3,6 +3,11 @@ package ad.supplier.enums;
 /**
  * @author natalija
  */
+
+/**
+ * Definition of auction request processing.
+ * Can be configured as: sequential or parallel broadcast. (.properties file)
+ */
 public enum BidOperationType {
 
     PARALLEL("PARALLEL"), SEQUENTIAL("SEQUENTIAL");
