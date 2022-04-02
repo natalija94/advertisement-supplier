@@ -22,6 +22,7 @@ public class BidderController {
     }
 
     @GetMapping("/{id}")
+    @ResponseBody
     String getTheBestAdOffer(@PathVariable String id, @RequestParam Map<String, String> allParams) {
         try {
             return auctionRequestProcessor.processRequestForAuction(id, allParams).getContent();
