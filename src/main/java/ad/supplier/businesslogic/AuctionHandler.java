@@ -4,7 +4,6 @@ import ad.supplier.exception.NoAvailableBidException;
 import ad.supplier.model.BidResponse;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -12,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static ad.supplier.businesslogic.AuctionValidator.isBidResponseValid;
 import static ad.supplier.businesslogic.Constants.PRICE_ATTRIBUTE_CONST;
 
 /**
@@ -29,9 +29,10 @@ public class AuctionHandler implements Consumer<BidResponse> {
 
     @Override
     public void accept(BidResponse bidResponse) {
-        if (bidResponse != null) {
-            bids.add(bidResponse);
+        if (!isBidResponseValid(bidResponse)) {
+            throw new RuntimeException("BidResponse must be specified in order to be considered as one the bids.");
         }
+        bids.add(formatBestOffer(bidResponse));
     }
 
     public BidResponse getBestOffer() throws NoAvailableBidException {
@@ -44,11 +45,11 @@ public class AuctionHandler implements Consumer<BidResponse> {
     }
 
     public BidResponse formatBestOffer(BidResponse response) {
-        if (response == null || StringUtils.isEmpty(response.getId()) || StringUtils.isEmpty(response.getContent()) ) {
-            throw new IllegalArgumentException("Please provide valid input in order to get appropriate results.");
+        if (!isBidResponseValid(response)) {
+            throw new IllegalArgumentException("Response must be specified in order to be formatted.");
         }
 
-        if(response.getContent().contains(PRICE_ATTRIBUTE_CONST)){
+        if (response.getContent().contains(PRICE_ATTRIBUTE_CONST)) {
             response.setContent(response.getContent().replace(PRICE_ATTRIBUTE_CONST, String.format("%.0f", response.getBid())));
         }
 

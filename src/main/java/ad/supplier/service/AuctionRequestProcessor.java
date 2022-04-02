@@ -2,6 +2,7 @@ package ad.supplier.service;
 
 import ad.supplier.businesslogic.AuctionHandler;
 import ad.supplier.businesslogic.AuctionItemsProcessor;
+import ad.supplier.enums.BidOperationType;
 import ad.supplier.exception.NoAvailableBidException;
 import ad.supplier.model.BidRequest;
 import ad.supplier.model.BidResponse;
@@ -10,7 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
-import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.function.Consumer;
 
 /**
  * @author natalija
@@ -20,7 +22,10 @@ import java.util.SortedSet;
 public class AuctionRequestProcessor {
 
     @Value("#{'${bidders}'.split(',')}")
-    private SortedSet<String> bidServers;
+    private TreeSet<String> bidServers;
+
+    @Value("${bidOperationType:SEQUENTIAL}")
+    BidOperationType bidOperationType;
 
     public final WebClientBidder webClientBidder;
     public final AuctionItemsProcessor auctionItemsProcessor;
@@ -40,17 +45,46 @@ public class AuctionRequestProcessor {
     public BidResponse processRequestForAuction(String id, Map<String, String> attributes) throws NoAvailableBidException {
         auctionItemsProcessor.processAttributesForAuction(id, attributes);
         BidRequest bidRequest = prepareRequest(id, attributes);
-        return broadcastAuctionRequestInParallelStream(bidRequest);
+
+        switch(bidOperationType){
+            case PARALLEL:
+                return broadcastAuctionRequestInParallel(bidRequest);
+            case SEQUENTIAL:
+            default:
+                return broadcastAuctionRequestSequentially(id,attributes);
+        }
     }
 
-    public BidResponse broadcastAuctionRequestInParallelStream(final BidRequest bidRequest) throws NoAvailableBidException {
+    /*
+     * Broadcast messages sequentially.
+     */
+    public BidResponse broadcastAuctionRequestSequentially(String id, Map<String, String> attributes) throws NoAvailableBidException {
+        auctionItemsProcessor.processAttributesForAuction(id, attributes);
+        BidRequest bidRequest = prepareRequest(id, attributes);
+        AuctionHandler auctionHandler = new AuctionHandler(bidRequest.getId());
+        webClientBidder.fetchBidsOneByOne(bidRequest,auctionHandler);
+        return auctionHandler.getBestOffer();
+    }
+
+    /*
+     * Broadcast messages in parallel.
+     * If expected.result is considered this isn't requested.
+     */
+    public BidResponse broadcastAuctionRequestInParallel(final BidRequest bidRequest) throws NoAvailableBidException {
         log.info("START AUCTION");
         AuctionHandler auctionHandler = new AuctionHandler(bidRequest.getId());
         bidServers.stream().parallel().forEach(server -> {
-            webClientBidder.postAdBid(server, bidRequest, auctionHandler);
+            postAdBid(server, bidRequest, auctionHandler);
         });
         BidResponse bestOffer = auctionHandler.getBestOffer();
         log.info("END OF AUCTION.\n");
         return bestOffer;
+    }
+
+    public void postAdBid(String url, BidRequest bidRequest, Consumer<BidResponse> handleResponse) {
+        log.info("Sending to server: {}", url);
+        BidResponse response = webClientBidder.bidRequestBuilder(url, bidRequest);
+        handleResponse.accept(response);
+        log.info("Bid Response: id: {}, url: {}, response: {}", response.getContent(), url, response.getBid());
     }
 }
