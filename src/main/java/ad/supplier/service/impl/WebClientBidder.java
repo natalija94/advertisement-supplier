@@ -1,4 +1,4 @@
-package ad.supplier.service;
+package ad.supplier.service.impl;
 
 import ad.supplier.exception.BidRequestException;
 import ad.supplier.model.BidRequest;

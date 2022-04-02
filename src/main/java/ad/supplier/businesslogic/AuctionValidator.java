@@ -13,6 +13,6 @@ public class AuctionValidator {
     }
 
     public static boolean isBidRequestValid(BidRequest bidRequest) {
-        return bidRequest != null && StringUtils.isNotEmpty(bidRequest.getId()) && bidRequest.getAttributes()!=null && bidRequest.getAttributes().isEmpty();
+        return bidRequest != null && StringUtils.isNotEmpty(bidRequest.getId());
     }
 }
