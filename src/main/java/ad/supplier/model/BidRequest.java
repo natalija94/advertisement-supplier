@@ -20,7 +20,7 @@ import java.util.Map;
 @Jacksonized
 public class BidRequest {
     @JsonProperty
-    private String id;
+    private int id;
     @JsonProperty
     private Map<String, String> attributes;
 }

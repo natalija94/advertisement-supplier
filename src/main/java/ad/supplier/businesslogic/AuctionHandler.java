@@ -26,10 +26,10 @@ import static ad.supplier.businesslogic.Constants.PRICE_ATTRIBUTE_CONST;
 @Data
 @Log4j2
 public class AuctionHandler implements Consumer<BidResponse> {
-    String auctionId;
+    int auctionId;
     List<BidResponse> bids = new ArrayList<>();
 
-    public AuctionHandler(String auctionId) {
+    public AuctionHandler(int auctionId) {
         this.auctionId = auctionId;
     }
 

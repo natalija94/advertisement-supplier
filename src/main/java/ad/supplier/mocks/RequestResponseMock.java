@@ -32,7 +32,7 @@ public class RequestResponseMock {
     public static BidResponse getMockResponse() {
         double price = getPriceForAuction();
         BidResponse response = BidResponse.builder()
-                .id("123")
+                .id(123)
                 .bid(price)
                 .content(String.format("%s:%s", 123, price))
                 .build();

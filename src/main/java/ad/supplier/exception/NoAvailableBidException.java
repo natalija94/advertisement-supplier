@@ -8,11 +8,11 @@ package ad.supplier.exception;
  * Thrown if no available bid found for initial request.
  */
 public class NoAvailableBidException extends Exception{
-    public NoAvailableBidException(String auctionId) {
+    public NoAvailableBidException(int auctionId) {
         super(String.format("There are no available bids for auctionId: %s", auctionId));
     }
 
-    public NoAvailableBidException(String auctionId, Throwable cause) {
-        super(auctionId, cause);
+    public NoAvailableBidException(int auctionId, Throwable cause) {
+        super(String.format("There are no available bids for auctionId: %s"), cause);
     }
 }

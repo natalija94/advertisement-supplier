@@ -19,7 +19,7 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 public class BidResponse {
     @JsonProperty
-    private String id;
+    private int id;
     @JsonProperty
     private double bid;
     @JsonProperty

@@ -3,7 +3,6 @@ package ad.supplier.service;
 import ad.supplier.exception.NoAvailableBidException;
 import ad.supplier.model.BidRequest;
 import ad.supplier.model.BidResponse;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
@@ -22,10 +21,7 @@ public interface AuctionRequestProcessor {
      * @param attributes params from request.
      * @return created BidRequest based on request.
      */
-    default BidRequest prepareRequest(String id, Map<String, String> attributes) {
-        if (StringUtils.isEmpty(id)) {
-            throw new RuntimeException("BidRequest must have specified id and attributes.");
-        }
+    default BidRequest prepareRequest(int id, Map<String, String> attributes) {
         return BidRequest.builder().id(id).attributes(attributes).build();
     }
 
@@ -37,11 +33,7 @@ public interface AuctionRequestProcessor {
      * @return best offer from Bidders.
      * @throws NoAvailableBidException if no available/proper offers.
      */
-    default BidResponse processRequestForAuction(String id, Map<String, String> attributes) throws NoAvailableBidException {
-        if (StringUtils.isEmpty(id)) {
-            throw new RuntimeException("BidRequest must have specified id and attributes.");
-        }
-
+    default BidResponse processRequestForAuction(int id, Map<String, String> attributes) throws NoAvailableBidException {
         BidRequest bidRequest = prepareRequest(id, attributes);
         return processRequestForAuction(bidRequest);
     }

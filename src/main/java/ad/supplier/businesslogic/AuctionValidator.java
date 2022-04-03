@@ -13,10 +13,10 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class AuctionValidator {
     public static boolean isBidResponseValid(BidResponse bidResponse) {
-        return bidResponse != null && StringUtils.isNotEmpty(bidResponse.getId()) && StringUtils.isNotEmpty(bidResponse.getContent());
+        return bidResponse != null && StringUtils.isNotEmpty(bidResponse.getContent());
     }
 
     public static boolean isBidRequestValid(BidRequest bidRequest) {
-        return bidRequest != null && StringUtils.isNotEmpty(bidRequest.getId());
+        return bidRequest != null;
     }
 }
