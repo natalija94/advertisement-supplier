@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ad.supplier</groupId>
-    <artifactId>preview-ad</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>advertisement-supplier</artifactId>
+    <version>1.0.0</version>
 
     <name>Ad Supplier server</name>
 
