@@ -1,11 +1,11 @@
 package ad.supplier.controller;
 
+import ad.supplier.exception.NoAvailableBidException;
 import ad.supplier.service.AuctionRequestProcessor;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
 
@@ -14,7 +14,6 @@ import java.util.Map;
  */
 @RestController
 @Slf4j
-@RequestMapping("bid")
 public class BidderController {
     final AuctionRequestProcessor auctionRequestProcessor;
 
@@ -23,8 +22,12 @@ public class BidderController {
     }
 
     @GetMapping("/{id}")
-    Object getTheBestAdOffer(@PathVariable String id, @RequestParam Map<String, String> allParams) {
-        auctionRequestProcessor.processRequestForAuction(id, allParams);
-        return "success";
+    @ResponseBody
+    String getTheBestAdOffer(@PathVariable String id, @RequestParam Map<String, String> allParams) {
+        try {
+            return auctionRequestProcessor.processRequestForAuction(id, allParams).getContent();
+        } catch (NoAvailableBidException e) {
+            throw new ResponseStatusException(HttpStatus.SEE_OTHER, String.format("There are no available bids for auction: %s", id), e);
+        }
     }
 }

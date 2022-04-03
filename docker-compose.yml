@@ -1,0 +1,43 @@
+version: '3.7'
+services:
+  app:
+    container_name: app
+    image: demo-auction
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - /data/auction-handler
+    environment:
+      bidOperationType: SEQUENTIAL
+      bidders: http://yieldlab1:8081,http://yieldlab2:8082,http://yieldlab3:8083
+    links:
+      - "yieldlab1"
+      - "yieldlab2"
+      - "yieldlab3"
+    ports:
+      - "8080:8080"
+  yieldlab1:
+    container_name: yieldlab1
+    image: yieldlab/recruiting-test-bidder
+    ports:
+      - "8081:8081"
+    environment:
+      biddingTrigger: a
+      initial: 150
+  yieldlab2:
+    container_name: yieldlab2
+    image: yieldlab/recruiting-test-bidder
+    ports:
+      - "8082:8082"
+    environment:
+      biddingTrigger: b
+      initial: 250
+  yieldlab3:
+    container_name: yieldlab3
+    image: yieldlab/recruiting-test-bidder
+    ports:
+      - "8083:8083"
+    environment:
+      biddingTrigger: c
+      initial: 500

@@ -10,6 +10,10 @@ import java.math.RoundingMode;
 /**
  * @author natalija
  */
+
+/**
+ * Mocks provider, purpose process of development.
+ */
 @Log4j2
 public class RequestResponseMock {
 
@@ -22,6 +26,17 @@ public class RequestResponseMock {
                 .build();
         log.info("a complete response from server => {}", response);
         log.info("END.");
+        return response;
+    }
+
+    public static BidResponse getMockResponse() {
+        double price = getPriceForAuction();
+        BidResponse response = BidResponse.builder()
+                .id("123")
+                .bid(price)
+                .content(String.format("%s:%s", 123, price))
+                .build();
+        log.info("MOCK RETURNED");
         return response;
     }
 

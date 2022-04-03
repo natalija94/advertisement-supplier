@@ -1,38 +1,57 @@
 package ad.supplier.service;
 
+import ad.supplier.exception.NoAvailableBidException;
 import ad.supplier.model.BidRequest;
 import ad.supplier.model.BidResponse;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
-
-import static ad.supplier.mocks.RequestResponseMock.getMockResponse;
+import java.util.Map;
 
 /**
  * @author natalija
  */
-@Service
-@Log4j2
-public class AuctionRequestProcessor {
-    @Value("#{'${bidders}'.split(',')}")
-    private HashSet<String> bidServers;
 
-    public BidRequest prepareRequest(String id, Map<String, String> attributes) {
+/**
+ * Auction processor.
+ */
+public interface AuctionRequestProcessor {
+    /**
+     * Default request processor method.
+     *
+     * @param id         identifies auction. Path variable from request.
+     * @param attributes params from request.
+     * @return created BidRequest based on request.
+     */
+    default BidRequest prepareRequest(String id, Map<String, String> attributes) {
+        if (StringUtils.isEmpty(id)) {
+            throw new RuntimeException("BidRequest must have specified id and attributes.");
+        }
         return BidRequest.builder().id(id).attributes(attributes).build();
     }
 
-    public BidResponse sendRequest(BidRequest bidRequest, String address) {
-        log.info("START");
-        log.info("Sending request {} to the server = > {} ", bidRequest, address);
-        return getMockResponse(bidRequest);
+    /**
+     * Process request for auction. Sends request to bidders.
+     *
+     * @param id         identifies auction. Path variable from request.
+     * @param attributes params from request.
+     * @return best offer from Bidders.
+     * @throws NoAvailableBidException if no available/proper offers.
+     */
+    default BidResponse processRequestForAuction(String id, Map<String, String> attributes) throws NoAvailableBidException {
+        if (StringUtils.isEmpty(id)) {
+            throw new RuntimeException("BidRequest must have specified id and attributes.");
+        }
+
+        BidRequest bidRequest = prepareRequest(id, attributes);
+        return processRequestForAuction(bidRequest);
     }
 
-    public void processRequestForAuction(String id, Map<String, String> allParams) {
-        BidRequest bidRequest = prepareRequest(id, allParams);
-        sendRequest(bidRequest, bidServers.stream().findFirst().get());
-
-    }
-
+    /**
+     * BidOperationType dependent processing.Sends request to bidders.
+     *
+     * @param bidRequest formatted request ready to be sent to bidders.
+     * @return best offer from Bidders.
+     * @throws NoAvailableBidException if no available/proper offers.
+     */
+    BidResponse processRequestForAuction(BidRequest bidRequest) throws NoAvailableBidException;
 }
