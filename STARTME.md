@@ -32,10 +32,10 @@ You need maven so you can perform the command: **clean install**.
 After **clean install** target folder is generated and .jar (which docker compose requires).
 You will need image for app service. After image building please consider following procedure:
 
-In order to manage the communication between different services network is introduced. Please do following steps:
-1. docker network create auction --gateway 172.18.0.1 --subnet 172.18.0.1/16
-2. start the services-> docker-compose up (All the services will be started: the Bidders and Supplier.)
-3. run the test script
+In order to manage the communication between different services network is introduced. Please check following steps:
+1. in cmd run : _docker network create auction --gateway 172.18.0.1 --subnet 172.18.0.1/16_
+2. start the services, in cmd run -> _docker-compose up_ (All the services will be started: the Bidders and Supplier.)
+3. run the test script : _run-test.sh_
 
 
 ### REMARK: Alternative to 1.2a
