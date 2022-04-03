@@ -10,13 +10,12 @@ services:
       - /data/auction-handler
     environment:
       bidOperationType: SEQUENTIAL
-      bidders: http://yieldlab1:8081,http://yieldlab2:8082,http://yieldlab3:8083
-    links:
-      - "yieldlab1"
-      - "yieldlab2"
-      - "yieldlab3"
+      bidders: http://172.18.0.4:8081,http://172.18.0.5:8082,http://172.18.0.6:8083
     ports:
       - "8080:8080"
+    networks:
+      auction_containers:
+        ipv4_address: 172.18.0.3
   yieldlab1:
     container_name: yieldlab1
     image: yieldlab/recruiting-test-bidder
@@ -25,6 +24,10 @@ services:
     environment:
       biddingTrigger: a
       initial: 150
+      server.port: 8081
+    networks:
+      auction_containers:
+        ipv4_address: 172.18.0.4
   yieldlab2:
     container_name: yieldlab2
     image: yieldlab/recruiting-test-bidder
@@ -33,6 +36,10 @@ services:
     environment:
       biddingTrigger: b
       initial: 250
+      server.port: 8082
+    networks:
+      auction_containers:
+        ipv4_address: 172.18.0.5
   yieldlab3:
     container_name: yieldlab3
     image: yieldlab/recruiting-test-bidder
@@ -41,3 +48,11 @@ services:
     environment:
       biddingTrigger: c
       initial: 500
+      server.port: 8083
+    networks:
+      auction_containers:
+        ipv4_address: 172.18.0.6
+networks:
+  auction_containers:
+    external:
+      name: auction

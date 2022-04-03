@@ -14,10 +14,37 @@ To start the test environment, either use the script `scripts/test-setup.sh` or 
 
 
 ### 1.2a Start the Advertisement Supplier application
+I had in mind configuring the complete start up using Docker compose including: this project and the instances of the one you provided.
+I had the problem with **connection refused** inside the different containers.
+That's why I introduced the solution with _custom network and custom addresses_.
 
 Prerequisites:
-Please checkout project from git: https://github.com/natalija94/advertisement-supplier. Please set java 11 to the system path.
-Please download Maven. 
+- Please checkout project from git: https://github.com/natalija94/advertisement-supplier.
+- Please download Maven.
+- Please enable Lombok in your IDE.
+
+Please find two files `docker-compose.yml` + `Dockerfile`.
+
+*Remark:
+docker-compose up  :   requires **jar** file of ad supplier service.
+You need maven so you can perform the command: **clean install**.
+
+After **clean install** target folder is generated and .jar (which docker compose requires).
+You will need image for app service. After image building please consider following procedure:
+
+In order to manage the communication between different services network is introduced. Please do following steps:
+1. docker network create auction --gateway 172.18.0.1 --subnet 172.18.0.1/16
+2. start the services-> docker-compose up (All the services will be started: the Bidders and Supplier.)
+3. run the test script
+
+
+### REMARK: Alternative to 1.2a
+While i had some difficulties with services communication in the development, I had to consider alternatives.
+That's why this solution is introduced.
+
+Prerequisites:
+Please checkout project from git: https://github.com/natalija94/advertisement-supplier. Please set   11 to the system path.
+Please download Maven.
 Please enable Lombok in your IDE.
 
 1. Set _http://localhost:8081,http://localhost:8082,http://localhost:8083_ as _bidders_ config in application.properties
@@ -28,29 +55,3 @@ Please enable Lombok in your IDE.
 
 *Regarding points 2,3,4: for development and debug mode I only use the _start.run.xml_ script which is pound in .run folder.
 *Automatically recognized as start scripts in Intelli JIDEA.
-
-
-
-
-### REMARK: Docker Alternative to 1.2a
-(Not complete)
-I tried to configure the complete system using Docker compose including: this project and the instances of the one you provided.
-I had the problem with **connection refused** with http://localhost:8082 and http://localhost:8083. I tried different things - with no success.
-That's why I introduced the solution in 1.2a.
-
-
-Prerequisites:
-- Please checkout project from git: https://github.com/natalija94/advertisement-supplier.
-- PLease download Maven.
-- Please enable Lombok in your IDE.
-
-Please find two files `docker-compose.yml` + `Dockerfile`.
-
-*Remark:
-docker-compose up  :   requires **jar** file of ad supplier service.
-You need maven so you can perform the command: **clean install**.
-
-After **clean install** target folder is generated and .jar which docker compose requires.
-First you need image for app service. 
-Perform: **docker-compose up** .
-Please run the command **docker-compose up** - in order to start the service.
