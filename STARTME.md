@@ -6,14 +6,10 @@ websites) to bidders (those who actually want to show ads). The core process is 
 and bids, and afterwards to determine who is winning. This challenge is about setting up a simplified version of this
 core process as its own application.
 
-## 1 Start auction
+________________________________
 
-### 1.1 Start the Advertisement Bidder applications
+## Start auction
 
-To start the test environment, either use the script `scripts/test-setup.sh` or run the following commands one after the other from your shell:
-
-
-### 1.2a Start the Advertisement Supplier application
 I had in mind configuring the complete start up using Docker compose including: this project and the instances of the one you provided.
 I had the problem with **connection refused** inside the different containers.
 That's why I introduced the solution with _custom network and custom addresses_.
@@ -37,8 +33,9 @@ In order to manage the communication between different services network is intro
 2. start the services, in cmd run -> _docker-compose up_ (All the services will be started: the Bidders and Supplier.)
 3. run the test script : _run-test.sh_
 
+________________________________
 
-### REMARK: Alternative to 1.2a
+### REMARK: Alternative to docker services at one place
 While i had some difficulties with services communication in the development, I had to consider alternatives.
 That's why this solution is introduced.
 
@@ -55,3 +52,7 @@ Please enable Lombok in your IDE.
 
 *Regarding points 2,3,4: for development and debug mode I only use the _start.run.xml_ script which is pound in .run folder.
 *Automatically recognized as start scripts in Intelli JIDEA.
+
+To start the Bidders: test environment, either use the script `scripts/test-setup.sh` or 
+run the following commands one after the other from your shell:
+
